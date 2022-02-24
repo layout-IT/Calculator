@@ -2,14 +2,19 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
   background: #00352D;
+  overflow: hidden;
 }
 
 .action {
-  padding: 15px;
+  padding: 15px 0px 15px 15px;
   font-size: 18px;
   color: #dbd8d8;
   height: 48px;
+  max-width: 90%;
+  overflow: hidden;
+  margin-right: 10px;
 }
 
 .resault {

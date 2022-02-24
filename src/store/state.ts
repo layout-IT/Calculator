@@ -36,42 +36,90 @@ class State {
         makeAutoObservable(this)
     }
 
-    clickButton (button: string) {
+    setsZeroIfTheFirstPointIs (button: string) {
+        if (this.action.length === 0 && button === '.') {
+            this.action = '0'
+        }
+    }
+
+    itDoesNotAllowYouToEnterManyDotsOrZerosAsTheFirstCharacters (button: string) {
+
+    }
+
+    countsPercentages () {
+        let firstNumber = ''
+        let seconsdNumber = ''
+        let searchNumbers = this.action.split('')
+        for (let i = 0; i < searchNumbers.length; i++) {
+            if (searchNumbers[i] === '-' || searchNumbers[i] === '+') {
+                firstNumber = this.action.substring(0, i)
+                seconsdNumber = this.action.substring(i + 1, searchNumbers.length)
+                this.action = this.action.substring(0, i + 1)
+            }
+        }
+        this.action = this.action + ((parseInt(firstNumber) / 100) * parseInt(seconsdNumber))
+    }
+
+    deletesAValue () {
+        this.action.length === 1 ? this.action = '' : this.action = this.action.substring(0, this.action.length - 1)
+    }
+
+    producesASolution () {
+        try {
+            this.result = eval(this.action)
+        } catch {
+            this.action = 'Недопустимое значение'
+            setTimeout(() => {
+                this.action = ''
+            }, 1000)
+        }
+    }
+    locksAndUnlocksTheButton(){
+        let buttonId
+        for (let i = 0; i < this.action.length; i++) {
+            if (this.action[i] === '.' && this.action[i + 1] === '.') {
+                let buttonId = document.getElementById('17')
+                buttonId && buttonId.setAttribute("disabled", "disabled")
+                let w = this.action.split('')
+                w.pop()
+                this.action = w.join('')
+            } else if (this.action[i] === '+' || this.action[i] === '-' || this.action[i] === '*' || this.action[i] === '/' || this.action[i] === '=') {
+                let buttonId = document.getElementById('17')
+                buttonId && buttonId.removeAttribute("disabled")
+            }
+        }
+    }
+
+    addsValues (button: string, id: number) {
+        this.action = this.action + button
+        this.locksAndUnlocksTheButton()
+
+    }
+
+    cleanUpValues () {
+        this.result = 0
+        this.action = ''
+    }
+
+    clickButton (button: string, id: number) {
+        this.itDoesNotAllowYouToEnterManyDotsOrZerosAsTheFirstCharacters(button)
+        this.setsZeroIfTheFirstPointIs(button)
         if (button !== '=') {
             if (button !== "DEL") {
                 if (button !== "AC") {
                     if (button !== "%") {
-                        this.action = this.action + button
+                        this.addsValues(button, id)
                     } else if (button === "%") {
-                        let firstNumber = ''
-                        let seconsdNumber = ''
-                        let searchNumbers = this.action.split('')
-                        for (let i = 0; i < searchNumbers.length; i++) {
-                            if (searchNumbers[i] === '-') {
-                                firstNumber = this.action.substring(0, i)
-                                seconsdNumber = this.action.substring(i + 1, searchNumbers.length)
-                                this.action = this.action.substring(0, i + 1)
-                            }
-                        }
-                        this.action = this.action + ((parseInt(firstNumber) / 100) * parseInt(seconsdNumber))
+                        this.countsPercentages()
                     }
                 } else if (button === "AC") {
-                    this.result = 0
-                    this.action = ''
+                    this.cleanUpValues()
                 }
             } else if (button === "DEL") {
-                this.action.length === 1 ? this.action = '' : this.action = this.action.substring(0, this.action.length - 1)
+                this.deletesAValue()
             }
         } else if (button === '=') {
-            try {
-                this.result = eval(this.action)
-                // this.action = ''
-            } catch {
-                this.action = 'Недопустимое значение'
-                setTimeout(() => {
-                    this.action = ''
-                }, 1000)
-            }
+            this.producesASolution()
         }
     }
 }
