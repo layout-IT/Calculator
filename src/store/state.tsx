@@ -1,4 +1,6 @@
 import {makeAutoObservable} from "mobx";
+import {createContext, FC, useContext} from "react";
+
 
 type buttonType = {
     id: number,
@@ -42,10 +44,6 @@ class State {
         }
     }
 
-    itDoesNotAllowYouToEnterManyDotsOrZerosAsTheFirstCharacters (button: string) {
-
-    }
-
     countsPercentages () {
         let firstNumber = ''
         let seconsdNumber = ''
@@ -74,25 +72,47 @@ class State {
             }, 1000)
         }
     }
-    locksAndUnlocksTheButton(){
-        let buttonId
+
+
+    locksAndUnlocksTheDotButton () {
         for (let i = 0; i < this.action.length; i++) {
             if (this.action[i] === '.' && this.action[i + 1] === '.') {
                 let buttonId = document.getElementById('17')
                 buttonId && buttonId.setAttribute("disabled", "disabled")
-                let w = this.action.split('')
-                w.pop()
-                this.action = w.join('')
-            } else if (this.action[i] === '+' || this.action[i] === '-' || this.action[i] === '*' || this.action[i] === '/' || this.action[i] === '=') {
+                let actionArray = this.action.split('')
+                actionArray.pop()
+                this.action = actionArray.join('')
+            } else if (this.action[i] === '+' && this.action[i + 1] === '.'
+                || this.action[i] === '-' && this.action[i + 1] === '.'
+                || this.action[i] === '*' && this.action[i + 1] === '.'
+                || this.action[i] === '/' && this.action[i + 1] === '.') {
+                let actionArray = this.action.split('')
+                actionArray.pop()
+                this.action = actionArray.join('') + '0.'
+
+            } else {
                 let buttonId = document.getElementById('17')
                 buttonId && buttonId.removeAttribute("disabled")
             }
         }
     }
 
-    addsValues (button: string, id: number) {
+    locksAndUnlocksTheZeroButton (button: string) {
+        for (let i = 0; i < this.action.length; i++) {
+            if (this.action.length === 1 && this.action[i] === '0' && button === '0') {
+                let buttonId = document.getElementById('18')
+                buttonId && buttonId.setAttribute("disabled", "disabled")
+            } else {
+                let buttonId = document.getElementById('18')
+                buttonId && buttonId.removeAttribute("disabled")
+            }
+        }
+    }
+
+    addsValues (button: string) {
         this.action = this.action + button
-        this.locksAndUnlocksTheButton()
+        this.locksAndUnlocksTheDotButton()
+        this.locksAndUnlocksTheZeroButton(button)
 
     }
 
@@ -100,28 +120,14 @@ class State {
         this.result = 0
         this.action = ''
     }
-
-    clickButton (button: string, id: number) {
-        this.itDoesNotAllowYouToEnterManyDotsOrZerosAsTheFirstCharacters(button)
-        this.setsZeroIfTheFirstPointIs(button)
-        if (button !== '=') {
-            if (button !== "DEL") {
-                if (button !== "AC") {
-                    if (button !== "%") {
-                        this.addsValues(button, id)
-                    } else if (button === "%") {
-                        this.countsPercentages()
-                    }
-                } else if (button === "AC") {
-                    this.cleanUpValues()
-                }
-            } else if (button === "DEL") {
-                this.deletesAValue()
-            }
-        } else if (button === '=') {
-            this.producesASolution()
-        }
-    }
 }
 
-export default new State()
+const StoreContext = createContext<State>(new State())
+const StoreProvider: FC<{ store: State }> = ({children, store}) => (
+    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+)
+const useState = () => {
+    return useContext(StoreContext)
+}
+export {State, StoreProvider, useState}
+
