@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {createContext, FC, useContext} from "react";
-
+import {log} from "util";
 
 type buttonType = {
     id: number,
@@ -99,12 +99,8 @@ class State {
 
     locksAndUnlocksTheZeroButton (button: string) {
         for (let i = 0; i < this.action.length; i++) {
-            if (this.action.length === 1 && this.action[i] === '0' && button === '0') {
-                let buttonId = document.getElementById('18')
-                buttonId && buttonId.setAttribute("disabled", "disabled")
-            } else {
-                let buttonId = document.getElementById('18')
-                buttonId && buttonId.removeAttribute("disabled")
+            if (this.action.length === 1 && this.action[i] === '0') {
+                this.action = '0.'
             }
         }
     }
