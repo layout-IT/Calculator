@@ -3,14 +3,14 @@
   "name": "express-products-vercel",
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "src/index.tsx",
       "use": "@vercel/react"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/index.ts"
+      "dest": "src/index.tsx"
     }
   ]
 }
