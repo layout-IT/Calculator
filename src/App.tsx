@@ -11,7 +11,6 @@ function App () {
                 <Display/>
                 <Buttons/>
             </div>
-
         </div>
     );
 }
