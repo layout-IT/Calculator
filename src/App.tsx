@@ -16,3 +16,5 @@ function App () {
 }
 
 export default App;
+
+// чтобы деплоить на gh-pages вернуть homepage и gh-pages в package.json
