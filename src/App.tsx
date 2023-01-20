@@ -1,8 +1,8 @@
 import React from 'react';
 import s from './App.module.scss'
 import './App.module.scss';
-import {Display} from "./componet/display/Display";
-import {Buttons} from "./componet/buttons/Buttons";
+import { Display } from "./componet/display/Display";
+import { Buttons } from "./componet/buttons/Buttons";
 
 function App () {
     return (
